@@ -82,8 +82,8 @@ function Logo() {
         fontSize: 18, fontWeight: 800, color: "#fff"
       }}>P</div>
       <div>
-        <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", lineHeight: 1.1 }}>PitPredict</div>
-        <div style={{ fontSize: 10, color: "#94a3b8", letterSpacing: 1.5, textTransform: "uppercase" }}>Sim Racing Markets</div>
+        <div className="pp-logo-text" style={{ fontSize: 18, fontWeight: 700, color: "#fff", lineHeight: 1.1 }}>PitPredict</div>
+        <div className="pp-subtitle" style={{ fontSize: 10, color: "#94a3b8", letterSpacing: 1.5, textTransform: "uppercase" }}>Sim Racing Markets</div>
       </div>
     </div>
   );
@@ -111,19 +111,19 @@ function StatusDot({ status }) {
 
 function Wallet({ balance, positions }) {
   return (
-    <div style={{
+    <div className="pp-wallet" style={{
       display: "flex", alignItems: "center", gap: 16,
       background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.25)",
       borderRadius: 10, padding: "8px 16px"
     }}>
       <div>
-        <div style={{ fontSize: 10, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1 }}>Balance</div>
-        <div style={{ fontSize: 18, fontWeight: 700, color: "#6366f1" }}>{formatCurrency(balance)}</div>
+        <div className="pp-wallet-label" style={{ fontSize: 10, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1 }}>Balance</div>
+        <div className="pp-wallet-value" style={{ fontSize: 18, fontWeight: 700, color: "#6366f1" }}>{formatCurrency(balance)}</div>
       </div>
       <div style={{ width: 1, height: 30, background: "rgba(99,102,241,0.25)" }} />
       <div>
-        <div style={{ fontSize: 10, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1 }}>Positions</div>
-        <div style={{ fontSize: 18, fontWeight: 700, color: "#e2e8f0" }}>{positions}</div>
+        <div className="pp-wallet-label" style={{ fontSize: 10, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1 }}>Positions</div>
+        <div className="pp-wallet-value" style={{ fontSize: 18, fontWeight: 700, color: "#e2e8f0" }}>{positions}</div>
       </div>
     </div>
   );
@@ -132,6 +132,7 @@ function Wallet({ balance, positions }) {
 function RaceCard({ race, onClick, isSelected, onWatch }) {
   return (
     <div
+      className="pp-race-card"
       onClick={onClick}
       style={{
         background: isSelected ? "rgba(99,102,241,0.15)" : "rgba(30,41,59,0.6)",
@@ -203,6 +204,7 @@ function RaceCard({ race, onClick, isSelected, onWatch }) {
 function OddsButton({ label, odds, color, onClick, small }) {
   return (
     <button
+      className="pp-odds-btn"
       onClick={onClick}
       style={{
         background: color === "green" ? "rgba(34,197,94,0.12)" : "rgba(239,68,68,0.12)",
@@ -214,8 +216,8 @@ function OddsButton({ label, odds, color, onClick, small }) {
       onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
       onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
     >
-      <span style={{ fontSize: small ? 10 : 11, color: "#94a3b8", marginBottom: 2 }}>{label}</span>
-      <span style={{
+      <span className="pp-odds-label" style={{ fontSize: small ? 10 : 11, color: "#94a3b8", marginBottom: 2 }}>{label}</span>
+      <span className="pp-odds-value" style={{
         fontSize: small ? 14 : 16, fontWeight: 700,
         color: color === "green" ? "#22c55e" : "#ef4444"
       }}>{odds}</span>
@@ -228,7 +230,7 @@ function DriverRow({ driver, odds, onBet, compact }) {
   const trendColor = driver.trend === "up" ? "#22c55e" : driver.trend === "down" ? "#ef4444" : "#64748b";
 
   return (
-    <div style={{
+    <div className="pp-driver-row" style={{
       display: "flex", alignItems: "center", justifyContent: "space-between",
       padding: compact ? "10px 14px" : "14px 18px",
       borderBottom: "1px solid rgba(51,65,85,0.3)",
@@ -237,8 +239,8 @@ function DriverRow({ driver, odds, onBet, compact }) {
       onMouseEnter={e => e.currentTarget.style.background = "rgba(51,65,85,0.2)"}
       onMouseLeave={e => e.currentTarget.style.background = "transparent"}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1 }}>
-        <div style={{
+      <div className="pp-driver-info" style={{ display: "flex", alignItems: "center", gap: 12, flex: 1 }}>
+        <div className="pp-driver-badge" style={{
           width: compact ? 28 : 32, height: compact ? 28 : 32, borderRadius: 8,
           background: driver.position <= 3 ? "linear-gradient(135deg, #6366f1, #8b5cf6)" : "rgba(51,65,85,0.5)",
           display: "flex", alignItems: "center", justifyContent: "center",
@@ -248,10 +250,10 @@ function DriverRow({ driver, odds, onBet, compact }) {
         </div>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: compact ? 13 : 14, fontWeight: 600, color: "#e2e8f0" }}>{driver.name}</span>
+            <span className="pp-driver-name" style={{ fontSize: compact ? 13 : 14, fontWeight: 600, color: "#e2e8f0" }}>{driver.name}</span>
             <span style={{ fontSize: 10, color: trendColor }}>{trendIcon}</span>
           </div>
-          <div style={{ fontSize: 11, color: "#64748b" }}>
+          <div className="pp-driver-meta" style={{ fontSize: 11, color: "#64748b" }}>
             {driver.car} · iR {driver.irating} · SR {driver.sr}
           </div>
         </div>
@@ -259,7 +261,7 @@ function DriverRow({ driver, odds, onBet, compact }) {
 
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         {driver.gap > 0 && (
-          <span style={{ fontSize: 11, color: "#64748b", marginRight: 8 }}>+{driver.gap.toFixed(1)}s</span>
+          <span className="pp-gap-label" style={{ fontSize: 11, color: "#64748b", marginRight: 8 }}>+{driver.gap.toFixed(1)}s</span>
         )}
         <OddsButton label="Yes" odds={formatPct(odds)} color="green" small={compact}
           onClick={() => onBet(driver, "yes", odds)} />
@@ -276,7 +278,7 @@ function BetSlip({ bet, onConfirm, onCancel, onAmountChange }) {
   const profit = payout - bet.amount;
 
   return (
-    <div style={{
+    <div className="pp-betslip" style={{
       background: "rgba(30,41,59,0.95)", border: "1px solid rgba(99,102,241,0.4)",
       borderRadius: 14, padding: 20, backdropFilter: "blur(10px)"
     }}>
@@ -448,7 +450,7 @@ function HowItWorks() {
     { icon: "💰", title: "Cash Out", desc: "Winning contracts pay $1.00. Withdraw your earnings anytime." },
   ];
   return (
-    <div style={{
+    <div className="pp-how-grid" style={{
       display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14,
       margin: "20px 0"
     }}>
@@ -517,13 +519,13 @@ function WatchOverlay({ race, drivers, lap, odds, onClose, onBet }) {
       animation: "slideIn 0.3s ease-out"
     }}>
       {/* Top bar */}
-      <div style={{
+      <div className="pp-watch-topbar" style={{
         display: "flex", justifyContent: "space-between", alignItems: "center",
         padding: "16px 24px", borderBottom: "1px solid rgba(51,65,85,0.4)"
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="pp-watch-topbar-info" style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <StatusDot status={race.status} />
-          <span style={{ fontSize: 18, fontWeight: 700, color: "#fff" }}>{race.name}</span>
+          <span className="pp-watch-title" style={{ fontSize: 18, fontWeight: 700, color: "#fff" }}>{race.name}</span>
           <span style={{ fontSize: 13, color: "#94a3b8" }}>{race.track}</span>
         </div>
         <button onClick={onClose} style={{
@@ -536,15 +538,15 @@ function WatchOverlay({ race, drivers, lap, odds, onClose, onBet }) {
       </div>
 
       {/* Race progress */}
-      <div style={{ padding: "16px 24px 0" }}>
+      <div className="pp-watch-content" style={{ padding: "16px 24px 0" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
           <span style={{ fontSize: 15, fontWeight: 600, color: "#e2e8f0" }}>
             {race.status === "live" ? `Lap ${lap} / ${race.laps}` : `${race.laps} laps — Grid forming`}
           </span>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <span style={{ fontSize: 12, color: "#64748b" }}>{flagText}</span>
-            <span style={{ fontSize: 12, color: "#64748b" }}>SOF: {race.sof}</span>
-            <span style={{ fontSize: 12, color: "#64748b" }}>{race.split}</span>
+            <span className="pp-watch-meta" style={{ fontSize: 12, color: "#64748b" }}>SOF: {race.sof}</span>
+            <span className="pp-watch-meta" style={{ fontSize: 12, color: "#64748b" }}>{race.split}</span>
           </div>
         </div>
         <div style={{ height: 8, background: "rgba(51,65,85,0.4)", borderRadius: 4, overflow: "hidden" }}>
@@ -557,7 +559,7 @@ function WatchOverlay({ race, drivers, lap, odds, onClose, onBet }) {
       </div>
 
       {/* Live tower */}
-      <div style={{ flex: 1, overflow: "auto", padding: "20px 24px" }}>
+      <div className="pp-watch-content" style={{ flex: 1, overflow: "auto", padding: "20px 24px" }}>
         <div style={{
           background: "rgba(15,23,42,0.6)", borderRadius: 14,
           border: "1px solid rgba(51,65,85,0.3)", overflow: "hidden"
@@ -566,7 +568,7 @@ function WatchOverlay({ race, drivers, lap, odds, onClose, onBet }) {
             const driverOdds = odds[d.id] || 0.5;
             const isLeader = d.position === 1;
             return (
-              <div key={d.id} style={{
+              <div key={d.id} className="pp-watch-driver" style={{
                 display: "flex", alignItems: "center", justifyContent: "space-between",
                 padding: "14px 20px",
                 borderBottom: i < drivers.length - 1 ? "1px solid rgba(51,65,85,0.3)" : "none",
@@ -574,7 +576,7 @@ function WatchOverlay({ race, drivers, lap, odds, onClose, onBet }) {
               }}>
                 {/* Position + driver */}
                 <div style={{ display: "flex", alignItems: "center", gap: 14, flex: 1 }}>
-                  <div style={{
+                  <div className="pp-driver-badge" style={{
                     width: 36, height: 36, borderRadius: 8,
                     background: d.position <= 3
                       ? `linear-gradient(135deg, ${d.position === 1 ? "#22c55e" : "#6366f1"}, ${d.position === 1 ? "#16a34a" : "#8b5cf6"})`
@@ -586,7 +588,7 @@ function WatchOverlay({ race, drivers, lap, odds, onClose, onBet }) {
                   </div>
                   <div>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontSize: 15, fontWeight: 600, color: "#e2e8f0" }}>{d.name}</span>
+                      <span className="pp-watch-driver-name" style={{ fontSize: 15, fontWeight: 600, color: "#e2e8f0" }}>{d.name}</span>
                       <span style={{ fontSize: 12, color: "#64748b" }}>{d.car}</span>
                       <span style={{
                         fontSize: 10,
@@ -602,7 +604,7 @@ function WatchOverlay({ race, drivers, lap, odds, onClose, onBet }) {
                 </div>
 
                 {/* Gap */}
-                <div style={{ width: 80, textAlign: "right", marginRight: 16 }}>
+                <div className="pp-watch-gap" style={{ width: 80, textAlign: "right", marginRight: 16 }}>
                   {d.gap > 0 ? (
                     <span style={{ fontSize: 14, fontWeight: 600, color: "#94a3b8", fontFamily: "monospace" }}>
                       +{d.gap.toFixed(1)}s
@@ -733,6 +735,58 @@ export default function PitPredict() {
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 3px; }
+
+        @media (max-width: 768px) {
+          .pp-header { flex-wrap: wrap !important; padding: 12px 16px !important; gap: 10px !important; }
+          .pp-header-right { width: 100% !important; justify-content: space-between !important; gap: 10px !important; }
+          .pp-subtitle { display: none !important; }
+          .pp-wallet { padding: 6px 10px !important; gap: 10px !important; }
+          .pp-wallet-value { font-size: 15px !important; }
+          .pp-content { padding: 14px 16px !important; }
+          .pp-races .pp-race-card { min-width: 180px !important; padding: 12px !important; }
+          .pp-market-grid { grid-template-columns: 1fr !important; }
+          .pp-how-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .pp-driver-row { padding: 10px 12px !important; }
+          .pp-driver-badge { width: 28px !important; height: 28px !important; font-size: 12px !important; }
+          .pp-driver-name { font-size: 13px !important; }
+          .pp-driver-meta { font-size: 10px !important; }
+          .pp-odds-btn { min-width: 56px !important; padding: 6px 8px !important; }
+          .pp-odds-label { font-size: 10px !important; }
+          .pp-odds-value { font-size: 13px !important; }
+          .pp-watch-topbar { padding: 12px 16px !important; }
+          .pp-watch-topbar-info { flex-wrap: wrap !important; gap: 6px !important; }
+          .pp-watch-title { font-size: 15px !important; }
+          .pp-watch-content { padding: 14px 16px !important; }
+          .pp-watch-driver { padding: 10px 14px !important; }
+          .pp-watch-gap { width: 60px !important; }
+          .pp-watch-meta { display: none !important; }
+          .pp-footer { flex-direction: column !important; gap: 6px !important; text-align: center !important; }
+          .pp-betslip { padding: 16px !important; }
+        }
+
+        @media (max-width: 480px) {
+          .pp-header { padding: 10px 12px !important; }
+          .pp-logo-text { font-size: 15px !important; }
+          .pp-nav-btn { padding: 5px 10px !important; font-size: 11px !important; }
+          .pp-wallet { padding: 5px 8px !important; gap: 8px !important; }
+          .pp-wallet-label { font-size: 9px !important; }
+          .pp-wallet-value { font-size: 13px !important; }
+          .pp-content { padding: 10px 12px !important; }
+          .pp-races { gap: 8px !important; }
+          .pp-races .pp-race-card { min-width: 160px !important; padding: 10px !important; }
+          .pp-how-grid { grid-template-columns: 1fr !important; }
+          .pp-driver-row { padding: 8px 10px !important; gap: 8px !important; }
+          .pp-driver-info { gap: 8px !important; }
+          .pp-driver-meta { display: none !important; }
+          .pp-gap-label { display: none !important; }
+          .pp-odds-btn { min-width: 48px !important; padding: 5px 6px !important; }
+          .pp-watch-topbar { padding: 10px 12px !important; }
+          .pp-watch-content { padding: 10px 12px !important; }
+          .pp-watch-driver { padding: 8px 10px !important; }
+          .pp-watch-driver-name { max-width: 100px !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+          .pp-watch-gap { width: 50px !important; }
+          .pp-market-header { flex-direction: column !important; align-items: flex-start !important; gap: 4px !important; }
+        }
       `}</style>
 
       {/* Watch overlay */}
@@ -761,17 +815,17 @@ export default function PitPredict() {
       )}
 
       {/* Header */}
-      <div style={{
+      <div className="pp-header" style={{
         display: "flex", justifyContent: "space-between", alignItems: "center",
         padding: "14px 24px", borderBottom: "1px solid rgba(51,65,85,0.4)",
         background: "rgba(15,23,42,0.8)", backdropFilter: "blur(10px)",
         position: "sticky", top: 0, zIndex: 50
       }}>
         <Logo />
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+        <div className="pp-header-right" style={{ display: "flex", alignItems: "center", gap: 20 }}>
           <div style={{ display: "flex", gap: 4 }}>
             {["market", "positions", "how"].map(t => (
-              <button key={t} onClick={() => setTab(t)} style={{
+              <button className="pp-nav-btn" key={t} onClick={() => setTab(t)} style={{
                 padding: "6px 14px", borderRadius: 8, border: "none",
                 background: tab === t ? "rgba(99,102,241,0.2)" : "transparent",
                 color: tab === t ? "#a5b4fc" : "#64748b",
@@ -783,14 +837,14 @@ export default function PitPredict() {
         </div>
       </div>
 
-      <div style={{ padding: "20px 24px", maxWidth: 1400, margin: "0 auto" }}>
+      <div className="pp-content" style={{ padding: "20px 24px", maxWidth: 1400, margin: "0 auto" }}>
 
         {tab === "how" ? (
           <HowItWorks />
         ) : (
           <>
         {/* Race selector */}
-        <div style={{
+        <div className="pp-races" style={{
           display: "flex", gap: 12, overflowX: "auto", paddingBottom: 16,
           marginBottom: 20
         }}>
@@ -820,7 +874,7 @@ export default function PitPredict() {
             <PositionsPanel positions={positions} />
           </div>
         ) : tab === "market" ? (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 20 }}>
+          <div className="pp-market-grid" style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 20 }}>
             {/* Main market */}
             <div>
               <RaceSimulation lap={lap} totalLaps={selectedRace.laps} status={selectedRace.status} />
@@ -829,7 +883,7 @@ export default function PitPredict() {
                 background: "rgba(30,41,59,0.5)", borderRadius: 14,
                 border: "1px solid rgba(51,65,85,0.3)", overflow: "hidden"
               }}>
-                <div style={{
+                <div className="pp-market-header" style={{
                   display: "flex", justifyContent: "space-between", alignItems: "center",
                   padding: "14px 18px", borderBottom: "1px solid rgba(51,65,85,0.3)"
                 }}>
@@ -902,7 +956,7 @@ export default function PitPredict() {
         )}
 
         {/* Footer */}
-        <div style={{
+        <div className="pp-footer" style={{
           marginTop: 40, padding: "20px 0", borderTop: "1px solid rgba(51,65,85,0.3)",
           display: "flex", justifyContent: "space-between", alignItems: "center"
         }}>
