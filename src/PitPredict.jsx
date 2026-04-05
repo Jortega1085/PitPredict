@@ -129,7 +129,7 @@ function Wallet({ balance, positions }) {
   );
 }
 
-function RaceCard({ race, onClick, isSelected }) {
+function RaceCard({ race, onClick, isSelected, onWatch }) {
   return (
     <div
       onClick={onClick}
@@ -153,6 +153,49 @@ function RaceCard({ race, onClick, isSelected }) {
         <span>{race.split}</span>
         <span>{race.laps} laps</span>
       </div>
+      {race.status === "live" ? (
+        <button
+          onClick={e => { e.stopPropagation(); onWatch(race); }}
+          style={{
+            marginTop: 12, width: "100%", padding: "7px 0", borderRadius: 8,
+            border: "1px solid rgba(34,197,94,0.3)", background: "rgba(34,197,94,0.1)",
+            color: "#22c55e", fontSize: 12, fontWeight: 600, cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+            transition: "all 0.15s"
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(34,197,94,0.2)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "rgba(34,197,94,0.1)"; }}
+        >
+          <span style={{ fontSize: 14 }}>▶</span> Watch Live
+        </button>
+      ) : race.status === "starting" ? (
+        <button
+          onClick={e => { e.stopPropagation(); onWatch(race); }}
+          style={{
+            marginTop: 12, width: "100%", padding: "7px 0", borderRadius: 8,
+            border: "1px solid rgba(234,179,8,0.3)", background: "rgba(234,179,8,0.1)",
+            color: "#eab308", fontSize: 12, fontWeight: 600, cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+            transition: "all 0.15s"
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(234,179,8,0.2)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "rgba(234,179,8,0.1)"; }}
+        >
+          <span style={{ fontSize: 14 }}>▶</span> Watch Grid
+        </button>
+      ) : (
+        <button
+          disabled
+          style={{
+            marginTop: 12, width: "100%", padding: "7px 0", borderRadius: 8,
+            border: "1px solid rgba(51,65,85,0.3)", background: "rgba(51,65,85,0.1)",
+            color: "#64748b", fontSize: 12, fontWeight: 600, cursor: "not-allowed",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+          }}
+        >
+          <span style={{ fontSize: 14 }}>⏱</span> Upcoming
+        </button>
+      )}
     </div>
   );
 }
@@ -605,6 +648,15 @@ export default function PitPredict() {
                 setDrivers(getInitialDrivers(race.id));
                 setLap(race.status === "live" ? 18 : 0);
                 setActiveBet(null);
+              }}
+              onWatch={(r) => {
+                setSelectedRace(r);
+                setDrivers(getInitialDrivers(r.id));
+                setLap(r.status === "live" ? 18 : 0);
+                setActiveBet(null);
+                setTab("market");
+                setToast(`Watching: ${r.name} — ${r.track}`);
+                setTimeout(() => setToast(null), 3000);
               }}
             />
           ))}
