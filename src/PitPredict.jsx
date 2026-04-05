@@ -502,6 +502,145 @@ function RaceSimulation({ lap, totalLaps, status }) {
   );
 }
 
+function WatchOverlay({ race, drivers, lap, odds, onClose, onBet }) {
+  const pct = race.status === "live" ? Math.min(100, (lap / race.laps) * 100) : 0;
+  const flagText = race.status === "starting" ? "STARTING GRID"
+    : lap >= race.laps ? "CHECKERED FLAG"
+    : lap >= race.laps - 2 ? "FINAL LAPS"
+    : "GREEN FLAG";
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 200,
+      background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)",
+      display: "flex", flexDirection: "column",
+      animation: "slideIn 0.3s ease-out"
+    }}>
+      {/* Top bar */}
+      <div style={{
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        padding: "16px 24px", borderBottom: "1px solid rgba(51,65,85,0.4)"
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <StatusDot status={race.status} />
+          <span style={{ fontSize: 18, fontWeight: 700, color: "#fff" }}>{race.name}</span>
+          <span style={{ fontSize: 13, color: "#94a3b8" }}>{race.track}</span>
+        </div>
+        <button onClick={onClose} style={{
+          background: "rgba(51,65,85,0.4)", border: "1px solid rgba(51,65,85,0.6)",
+          borderRadius: 8, padding: "8px 16px", color: "#e2e8f0",
+          cursor: "pointer", fontSize: 13, fontWeight: 600
+        }}>
+          ✕ Close
+        </button>
+      </div>
+
+      {/* Race progress */}
+      <div style={{ padding: "16px 24px 0" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <span style={{ fontSize: 15, fontWeight: 600, color: "#e2e8f0" }}>
+            {race.status === "live" ? `Lap ${lap} / ${race.laps}` : `${race.laps} laps — Grid forming`}
+          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontSize: 12, color: "#64748b" }}>{flagText}</span>
+            <span style={{ fontSize: 12, color: "#64748b" }}>SOF: {race.sof}</span>
+            <span style={{ fontSize: 12, color: "#64748b" }}>{race.split}</span>
+          </div>
+        </div>
+        <div style={{ height: 8, background: "rgba(51,65,85,0.4)", borderRadius: 4, overflow: "hidden" }}>
+          <div style={{
+            height: "100%", width: `${pct}%`,
+            background: "linear-gradient(90deg, #22c55e, #16a34a)",
+            borderRadius: 4, transition: "width 0.5s"
+          }} />
+        </div>
+      </div>
+
+      {/* Live tower */}
+      <div style={{ flex: 1, overflow: "auto", padding: "20px 24px" }}>
+        <div style={{
+          background: "rgba(15,23,42,0.6)", borderRadius: 14,
+          border: "1px solid rgba(51,65,85,0.3)", overflow: "hidden"
+        }}>
+          {drivers.map((d, i) => {
+            const driverOdds = odds[d.id] || 0.5;
+            const isLeader = d.position === 1;
+            return (
+              <div key={d.id} style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                padding: "14px 20px",
+                borderBottom: i < drivers.length - 1 ? "1px solid rgba(51,65,85,0.3)" : "none",
+                background: isLeader ? "rgba(34,197,94,0.05)" : "transparent"
+              }}>
+                {/* Position + driver */}
+                <div style={{ display: "flex", alignItems: "center", gap: 14, flex: 1 }}>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: 8,
+                    background: d.position <= 3
+                      ? `linear-gradient(135deg, ${d.position === 1 ? "#22c55e" : "#6366f1"}, ${d.position === 1 ? "#16a34a" : "#8b5cf6"})`
+                      : "rgba(51,65,85,0.5)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 15, fontWeight: 700, color: "#fff"
+                  }}>
+                    P{d.position}
+                  </div>
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: 15, fontWeight: 600, color: "#e2e8f0" }}>{d.name}</span>
+                      <span style={{ fontSize: 12, color: "#64748b" }}>{d.car}</span>
+                      <span style={{
+                        fontSize: 10,
+                        color: d.trend === "up" ? "#22c55e" : d.trend === "down" ? "#ef4444" : "#64748b"
+                      }}>
+                        {d.trend === "up" ? "▲" : d.trend === "down" ? "▼" : "●"}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
+                      iR {d.irating} · SR {d.sr}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Gap */}
+                <div style={{ width: 80, textAlign: "right", marginRight: 16 }}>
+                  {d.gap > 0 ? (
+                    <span style={{ fontSize: 14, fontWeight: 600, color: "#94a3b8", fontFamily: "monospace" }}>
+                      +{d.gap.toFixed(1)}s
+                    </span>
+                  ) : (
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#22c55e" }}>LEADER</span>
+                  )}
+                </div>
+
+                {/* Odds + bet */}
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <OddsButton label="Yes" odds={formatPct(driverOdds)} color="green"
+                    onClick={() => onBet(d, "yes", driverOdds)} />
+                  <OddsButton label="No" odds={formatPct(1 - driverOdds)} color="red"
+                    onClick={() => onBet(d, "no", 1 - driverOdds)} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div style={{
+        padding: "12px 24px", borderTop: "1px solid rgba(51,65,85,0.4)",
+        display: "flex", justifyContent: "space-between", alignItems: "center"
+      }}>
+        <span style={{ fontSize: 12, color: "#64748b" }}>
+          {race.viewers > 0 ? `${race.viewers.toLocaleString()} watching` : ""}
+        </span>
+        <span style={{ fontSize: 12, color: "#475569" }}>
+          Positions update live · Click Yes/No to place predictions
+        </span>
+      </div>
+    </div>
+  );
+}
+
 // --- Main App ---
 export default function PitPredict() {
   const [selectedRace, setSelectedRace] = useState(SERIES[0]);
@@ -516,6 +655,7 @@ export default function PitPredict() {
     SERIES.reduce((acc, r) => { acc[r.id] = Math.floor(Math.random() * 5000 + 2000); return acc; }, {})
   );
   const [tab, setTab] = useState("market");
+  const [watching, setWatching] = useState(false);
   const [toast, setToast] = useState(null);
   const [chartDataMap] = useState(() =>
     Object.entries(RACE_DRIVERS).reduce((acc, [raceId, raceDrivers]) => {
@@ -595,6 +735,21 @@ export default function PitPredict() {
         ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 3px; }
       `}</style>
 
+      {/* Watch overlay */}
+      {watching && (
+        <WatchOverlay
+          race={selectedRace}
+          drivers={drivers}
+          lap={lap}
+          odds={odds}
+          onClose={() => setWatching(false)}
+          onBet={(driver, side, price) => {
+            setActiveBet({ driver, side, price, amount: betAmount });
+            setWatching(false);
+          }}
+        />
+      )}
+
       {/* Toast */}
       {toast && (
         <div style={{
@@ -654,9 +809,7 @@ export default function PitPredict() {
                 setDrivers(getInitialDrivers(r.id));
                 setLap(r.status === "live" ? 18 : 0);
                 setActiveBet(null);
-                setTab("market");
-                setToast(`Watching: ${r.name} — ${r.track}`);
-                setTimeout(() => setToast(null), 3000);
+                setWatching(true);
               }}
             />
           ))}
